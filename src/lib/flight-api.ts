@@ -2,7 +2,7 @@
 // The browser only talks to this API; it never holds AWS credentials.
 const API_URL = import.meta.env["VITE_FLIGHT_API_URL"] as string;
 
-export type PlanName = "tokyo" | "seoul";
+export type PlanName = "tokyo" | "seoul" | "london";
 
 export type Subscription = {
   route: string;
@@ -15,6 +15,7 @@ export type Subscription = {
 export const PLANS: { name: PlanName; label: string; route: string; typicalPrice: number }[] = [
   { name: "tokyo", label: "台北 ✈ 東京", route: "TPE-TYO", typicalPrice: 9325 },
   { name: "seoul", label: "台北 ✈ 首爾", route: "TPE-SEL", typicalPrice: 5989 },
+  { name: "london", label: "台北 ✈ 倫敦", route: "TPE-LON", typicalPrice: 23081 },
 ];
 
 async function parse<T>(res: Response): Promise<T> {

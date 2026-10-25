@@ -6,7 +6,7 @@ from boto3.dynamodb.conditions import Key
 UA = "Mozilla/5.0 (compatible; flight-notifier/1.0)"
 HISTORY = boto3.resource("dynamodb").Table("notification_history")
 _secrets = boto3.client("secretsmanager")
-CITY = {"TPE": "台北", "TYO": "東京", "SEL": "首爾"}
+CITY = {"TPE": "台北", "TYO": "東京", "SEL": "首爾", "LON": "倫敦"}
 _cfg = None
 
 
