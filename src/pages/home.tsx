@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { BellRing, Radar, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Footer, Logo, Reveal } from "@/components/site";
+import { Backdrop, Footer, Logo, Reveal } from "@/components/site";
 
 const features = [
   { icon: Radar, title: "盯緊熱門航線 (Always-on route watching)", body: "持續監控台北出發的熱門航線（東京、首爾），自動抓最低票價。" },
@@ -18,8 +18,9 @@ export default function Index() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-hero">
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
+    <div className="relative isolate flex min-h-screen flex-col bg-gradient-hero">
+      <Backdrop />
+      <header className="mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-6xl items-center justify-between rounded-full glass px-4 py-3 sm:px-6">
         <Logo />
         <Button asChild variant="hero" size="sm">
           <Link to="/signin">Sign in / 登入</Link>
@@ -29,7 +30,7 @@ export default function Index() {
       <main className="flex-1">
         <section className="mx-auto max-w-4xl px-4 pb-20 pt-20 text-center sm:px-6 sm:pt-28">
           <Reveal>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+            <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
               <span className="text-gradient">Flight Price Notifier</span>
             </h1>
           </Reveal>
@@ -48,8 +49,8 @@ export default function Index() {
         <section className="mx-auto grid max-w-6xl gap-6 px-4 pb-24 sm:px-6 md:grid-cols-3">
           {features.map((f, i) => (
             <Reveal key={f.title} delay={i * 120}>
-              <div className="h-full rounded-xl border bg-card p-6 transition-colors hover:border-primary/60">
-                <div className="mb-4 grid h-10 w-10 place-items-center rounded-lg bg-accent text-primary-glow">
+              <div className="glass h-full rounded-3xl p-7 transition-transform duration-300 hover:-translate-y-1">
+                <div className="glass mb-5 grid h-11 w-11 place-items-center rounded-2xl text-primary">
                   <f.icon className="h-5 w-5" />
                 </div>
                 <h3 className="font-semibold">{f.title}</h3>

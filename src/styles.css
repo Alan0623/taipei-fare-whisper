@@ -34,46 +34,98 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.13 0.01 285);
-  --foreground: oklch(0.97 0.005 285);
-  --card: oklch(0.17 0.015 285);
-  --card-foreground: oklch(0.97 0.005 285);
-  --popover: oklch(0.17 0.015 285);
-  --popover-foreground: oklch(0.97 0.005 285);
-  --primary: oklch(0.62 0.22 295);
-  --primary-glow: oklch(0.72 0.18 310);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.22 0.02 285);
-  --secondary-foreground: oklch(0.97 0.005 285);
-  --muted: oklch(0.22 0.02 285);
-  --muted-foreground: oklch(0.68 0.02 285);
-  --accent: oklch(0.25 0.05 295);
-  --accent-foreground: oklch(0.97 0.005 285);
-  --destructive: oklch(0.65 0.2 25);
+  /* Frosted-glass pastel theme: warm porcelain base, mint / peach / blush blurs. */
+  --radius: 1.25rem;
+  --background: oklch(0.975 0.006 70);
+  --foreground: oklch(0.32 0.02 230);
+  --card: oklch(1 0 0 / 0.55);
+  --card-foreground: oklch(0.32 0.02 230);
+  --popover: oklch(0.99 0.004 70 / 0.9);
+  --popover-foreground: oklch(0.32 0.02 230);
+  --primary: oklch(0.7 0.085 180);
+  --primary-glow: oklch(0.76 0.13 45);
+  --primary-foreground: oklch(0.99 0.005 180);
+  --secondary: oklch(0.95 0.02 180);
+  --secondary-foreground: oklch(0.32 0.02 230);
+  --muted: oklch(0.95 0.008 70);
+  --muted-foreground: oklch(0.55 0.02 230);
+  --accent: oklch(0.93 0.04 180 / 0.7);
+  --accent-foreground: oklch(0.32 0.02 230);
+  --destructive: oklch(0.62 0.17 20);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.27 0.02 285);
-  --input: oklch(0.27 0.02 285);
-  --ring: oklch(0.62 0.22 295);
-  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
-  --gradient-hero: radial-gradient(60% 50% at 50% 0%, color-mix(in oklab, var(--primary) 35%, transparent), transparent 70%);
-  --shadow-glow: 0 10px 40px -10px color-mix(in oklab, var(--primary) 60%, transparent);
+  --border: oklch(1 0 0 / 0.75);
+  --input: oklch(0.88 0.015 200);
+  --ring: oklch(0.7 0.085 180);
+
+  --mint: oklch(0.86 0.07 175);
+  --peach: oklch(0.84 0.11 55);
+  --blush: oklch(0.86 0.07 10);
+
+  --gradient-primary: linear-gradient(135deg, oklch(0.74 0.08 178), oklch(0.66 0.09 190));
+  --gradient-text: linear-gradient(110deg, oklch(0.62 0.09 185) 0%, oklch(0.72 0.14 45) 55%, oklch(0.68 0.16 10) 100%);
+  --gradient-hero:
+    radial-gradient(38% 34% at 12% 18%, color-mix(in oklab, var(--mint) 85%, transparent), transparent 70%),
+    radial-gradient(30% 30% at 88% 26%, color-mix(in oklab, var(--peach) 70%, transparent), transparent 70%),
+    radial-gradient(36% 32% at 78% 88%, color-mix(in oklab, var(--blush) 75%, transparent), transparent 70%),
+    radial-gradient(30% 28% at 20% 82%, color-mix(in oklab, var(--mint) 55%, transparent), transparent 70%);
+  --shadow-glow:
+    0 12px 30px -12px color-mix(in oklab, var(--primary) 70%, transparent),
+    inset 0 1px 0 oklch(1 0 0 / 0.6);
+  --shadow-glass:
+    0 24px 48px -24px oklch(0.45 0.04 220 / 0.25),
+    0 2px 6px -2px oklch(0.45 0.04 220 / 0.08),
+    inset 0 1px 0 oklch(1 0 0 / 0.9),
+    inset 0 0 0 1px oklch(1 0 0 / 0.35);
 }
 
 @utility bg-gradient-primary {
   background-image: var(--gradient-primary);
 }
 @utility bg-gradient-hero {
+  background-color: var(--background);
   background-image: var(--gradient-hero);
+  background-attachment: fixed;
 }
 @utility text-gradient {
-  background-image: var(--gradient-primary);
+  background-image: var(--gradient-text);
   background-clip: text;
   color: transparent;
 }
 @utility shadow-glow {
   box-shadow: var(--shadow-glow);
 }
+/* Frosted glass panel: translucent white, background blur, bright rim. */
+@utility glass {
+  background-color: var(--card);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-glass);
+}
+/* Soft gradient light glows drifting behind the glass panels (no hard edges). */
+@utility orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  animation: orb-float 16s ease-in-out infinite alternate;
+}
+@utility orb-peach {
+  background: radial-gradient(circle, oklch(0.82 0.13 50 / 0.85), oklch(0.86 0.09 65 / 0.4) 55%, transparent 72%);
+}
+@utility orb-mint {
+  background: radial-gradient(circle, oklch(0.84 0.08 178 / 0.85), oklch(0.9 0.05 170 / 0.4) 55%, transparent 72%);
+}
+@utility orb-blush {
+  background: radial-gradient(circle, oklch(0.84 0.09 10 / 0.8), oklch(0.9 0.05 20 / 0.35) 55%, transparent 72%);
+}
+@keyframes orb-float {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(0, -30px, 0) scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; }
+}
+
 @utility reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -92,5 +144,6 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
 }

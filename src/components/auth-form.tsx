@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router";
 import { useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Footer, Logo } from "@/components/site";
+import { Backdrop, Footer, Logo } from "@/components/site";
 
 export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
   const navigate = useNavigate();
@@ -25,14 +25,15 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
     else setError("請到信箱確認後再登入 / Check your email to confirm.");
   }
 
-  const input = "w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring";
+  const input = "w-full rounded-full border border-white/80 bg-white/60 px-4 py-2.5 text-sm shadow-[inset_0_1px_2px_oklch(0.45_0.04_220/0.08)] outline-none transition focus:bg-white/80 focus:ring-2 focus:ring-ring/60";
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-hero">
-      <header className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6"><Logo /></header>
+    <div className="relative isolate flex min-h-screen flex-col bg-gradient-hero">
+      <Backdrop />
+      <header className="mx-auto mt-4 w-[calc(100%-2rem)] max-w-6xl rounded-full glass px-4 py-3 sm:px-6"><Logo /></header>
       <main className="flex flex-1 items-center justify-center px-4">
-        <form onSubmit={onSubmit} className="w-full max-w-sm space-y-4 rounded-xl border bg-card p-8 shadow-glow animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <h1 className="text-2xl font-bold">{isSignup ? "Sign up / 註冊" : "Sign in / 登入"}</h1>
+        <form onSubmit={onSubmit} className="glass w-full max-w-sm space-y-4 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <h1 className="text-2xl font-semibold">{isSignup ? "Sign up / 註冊" : "Sign in / 登入"}</h1>
           <label className="block space-y-1 text-sm">
             <span>Email</span>
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={input} />
@@ -47,7 +48,7 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             {isSignup ? "已有帳號？" : "還沒有帳號？"}{" "}
-            <Link to={isSignup ? "/signin" : "/signup"} className="text-primary-glow hover:underline">
+            <Link to={isSignup ? "/signin" : "/signup"} className="font-medium text-primary hover:underline">
               {isSignup ? "Sign in" : "Sign up"}
             </Link>
           </p>
