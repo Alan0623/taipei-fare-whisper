@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { BellRing, Radar, XCircle } from "lucide-react";
@@ -10,7 +11,22 @@ const features = [
   { icon: XCircle, title: "隨時取消 (Cancel anytime)", body: "月訂閱制，不想用隨時停，沒有綁約。" },
 ];
 
+// Travelpayouts monetization script, loaded on the landing page only.
+const TP_SCRIPT_SRC = "https://emrld.ltd/NTkwOTgy.js?t=590982";
+
+function useTravelpayoutsScript() {
+  useEffect(() => {
+    if (document.querySelector(`script[src="${TP_SCRIPT_SRC}"]`)) return;
+    const script = document.createElement("script");
+    script.async = true;
+    script.setAttribute("data-cmp-ab", "2");
+    script.src = TP_SCRIPT_SRC;
+    document.head.appendChild(script);
+  }, []);
+}
+
 export default function Index() {
+  useTravelpayoutsScript();
   usePageMeta({
     title: "Flight Price Notifier 機票降價通知",
     description: "設定航線與目標價，機票降價就通知你。Set a route and a target price — we email you when the fare drops.",
