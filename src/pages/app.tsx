@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PlanCard } from "@/components/plan-card";
 import { listSubscriptions, PLANS } from "@/lib/flight-api";
@@ -18,10 +18,19 @@ export default function AppPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const email = user.email ?? "";
+  // Set by the ECPay OrderResultURL redirect. Activation itself arrives via the server-to-server
+  // callback, which can land a few seconds after the browser does — so poll while still unpaid.
+  const [params] = useSearchParams();
+  const purchase = params.get("purchase");
   const subscriptions = useQuery({
     queryKey: ["subscriptions", email],
     queryFn: () => listSubscriptions(email),
     enabled: Boolean(email),
+    refetchInterval: (query) =>
+      purchase === "success" &&
+      query.state.data?.some((s) => s.subscription_status === "pending_payment")
+        ? 3000
+        : false,
   });
 
   async function signOut() {
@@ -48,6 +57,17 @@ export default function AppPage() {
             Pick a route and a target price — we email you when the fare drops to it.
           </p>
         </div>
+        {purchase === "success" && (
+          <p className="mt-6 glass rounded-2xl px-5 py-3 text-sm">
+            付款完成，感謝訂閱！訂閱狀態會在幾秒內更新。 / Payment received — your subscription will
+            activate in a few seconds.
+          </p>
+        )}
+        {purchase === "failed" && (
+          <p className="mt-6 glass rounded-2xl px-5 py-3 text-sm text-destructive">
+            付款未完成，請再試一次。 / Payment didn't go through — please try again.
+          </p>
+        )}
         {subscriptions.isError && (
           <p className="mt-6 text-sm text-destructive">
             無法載入訂閱 / Couldn't load subscriptions: {subscriptions.error.message}

@@ -22,6 +22,9 @@ def handler(event, context):
             "target_price": int(i["target_price"]),
             "currency": i.get("currency", "TWD"),
             "updated_at": i.get("updated_at"),
+            # M1 rows have no status: surface them as unpaid so the user can pay to migrate.
+            "subscription_status": i.get("subscription_status", "pending_payment"),
+            "current_period_end_date": i.get("current_period_end_date"),
         }
         for i in items
     ]

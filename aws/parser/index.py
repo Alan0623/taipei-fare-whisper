@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 import boto3
 from boto3.dynamodb.conditions import Attr
+from botocore.exceptions import ClientError
 
 UA = "Mozilla/5.0 (compatible; flight-notifier/1.0)"
 TABLE = boto3.resource("dynamodb").Table("subscriptions")
@@ -58,11 +59,24 @@ def fetch_cheapest(origin, destination, month, token, currency):
 
 
 def subscribers(route):
-    # M1: no subscription_status filter — every subscriber on the route is eligible.
-    kwargs = {"FilterExpression": Attr("route").eq(route)}
+    # Paywall: only active rows and cancelled rows still inside their paid-through period are served.
+    # A cancelled row whose current_period_end has passed is lazily retired to expired here.
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")  # same fixed-width format as the writers
+    kwargs = {"FilterExpression": Attr("route").eq(route) & Attr("subscription_status").is_in(["active", "cancelled"])}
     while True:
         page = TABLE.scan(**kwargs)
-        yield from page["Items"]
+        for it in page["Items"]:
+            if it["subscription_status"] == "active" or it.get("current_period_end", "") >= now:
+                yield it
+                continue
+            try:
+                TABLE.update_item(Key={"email": it["email"], "route": it["route"]},
+                                  UpdateExpression="SET subscription_status=:x, expired_at=:n, updated_at=:n",
+                                  ConditionExpression="subscription_status=:c",
+                                  ExpressionAttributeValues={":x": "expired", ":c": "cancelled", ":n": now})
+                print("grace ended -> expired", it["email"], route)
+            except ClientError as e:  # row changed since the scan (e.g. re-subscribed) — leave it
+                print("skip expire", it["email"], route, e.response["Error"]["Code"])
         if "LastEvaluatedKey" not in page:
             return
         kwargs["ExclusiveStartKey"] = page["LastEvaluatedKey"]
